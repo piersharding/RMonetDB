@@ -169,10 +169,24 @@ RMonetDBQuery <- function(handle, sql, parameters=list(), autocommit=FALSE, last
     return(res)
 }
 
-rmonetdb_col <- function(name, typ, len)
+rmonetdb_col <- function(name, typ, len, fac)
 {
     if (typ == 'integer') {
-        typ = 'integer'
+        if (fac) {
+            if (len < 20) {
+                len = 20
+            }
+            else if (len < 50) {
+                len = 50
+            }
+            else if (len < 100) {
+                len = 100
+            }
+            typ = paste('varchar(', len, ')', sep='')
+        }
+        else {
+            typ = 'integer'
+        }
     }
     else if (typ == 'numeric' || typ == 'double') {
         typ = 'real'
@@ -204,8 +218,19 @@ rmonetdb_col <- function(name, typ, len)
 
 rmonetdb_val <- function(val)
 {
+    if (is.na(val)) {
+        return('NULL')
+    }
     typ <- typeof(val)
-    if (typ == 'integer' || typ == 'numeric' || typ == 'double') {
+    if (typ == 'integer') {
+        if (is.factor(val)) {
+            val = paste('"', as.character(val), '"', sep='')
+        }
+        else {
+            val = sprintf("%d", val)
+        }
+    }
+    else if (typ == 'numeric' || typ == 'double') {
         val = as.character(val)
     }
     else {
@@ -215,26 +240,32 @@ rmonetdb_val <- function(val)
 }
 
 
-RMonetDBLoadDataFrame <- function(handle, table, tablename, drop=FALSE, chunk=100000)
+RMonetDBLoadDataFrame <- function(handle, table, tablename, drop=FALSE, chunk=500000, tmp.file=FALSE, append=FALSE)
 {
     if(!RMonetDBIsConnected(handle))
        stop("argument is not a valid RMonetDB handle")
 	table <- as.data.frame(table)
 	tablename <- as.character(tablename)
-    cols <- paste(lapply(names(table), FUN=function (x) {return(rmonetdb_col(x, typeof(table[[x]]), max(unlist(lapply(as.character(table[[x]]), FUN=nchar)))))}), collapse=", ")
+    cols <- paste(lapply(names(table), FUN=function (x) {return(rmonetdb_col(x, typeof(table[[x]]), max(unlist(lapply(as.character(table[[x]]), FUN=nchar))), is.factor(table[[x]])))}), collapse=", ")
     create <- paste('CREATE TABLE "', tablename, '" (', cols, ')', sep="") 
     there <- RMonetDBExists(handle, tablename)
     # wrap the whole thing in a single transaction
     RMonetDBStartTransaction(handle)
-    if (drop) {
-        # check if table exists first
-        if (there) {
-            delete <- paste('DROP TABLE "', tablename, '"', sep="")
-	        res <- RMonetDBExecute(handle, delete, autocommit=FALSE)
-        }
+    if (append) {
+        if (!there)
+            stop("table must exist in append mode")
     }
+    else {
+        if (drop) {
+            # check if table exists first
+            if (there) {
+                delete <- paste('DROP TABLE "', tablename, '"', sep="")
+	            res <- RMonetDBExecute(handle, delete, autocommit=FALSE)
+            }
+        }
 
-	res <- RMonetDBExecute(handle, create, autocommit=FALSE)
+	    res <- RMonetDBExecute(handle, create, autocommit=FALSE)
+    }
 
     # calculate the values for the rows
     rows <- length(table[[1]])
@@ -244,28 +275,45 @@ RMonetDBLoadDataFrame <- function(handle, table, tablename, drop=FALSE, chunk=10
         return(res)
     }
 
-    # work out how many chunks
-    iter <- ceiling(rows/chunk)
-    tot <- 0
+    if (tmp.file) {
+        tmpfile <- paste("/tmp/", tablename,".tmp.csv", sep="")
+        query <- paste("COPY ", sprintf("%0d", rows), ' RECORDS INTO "', tablename, '" FROM stdin USING DELIMITERS \'\\t\',\'\\n\',\'"\';', "\n", sep="")
+        cat(query, file=tmpfile)
+        write.table(table, file=tmpfile, sep="\t", na='NULL', row.names=FALSE, col.names=FALSE, append=TRUE, eol="\n")
+        cat("\n", file=tmpfile, fill=FALSE, append=TRUE)
+        query <- paste(readLines(tmpfile), collapse="\n")
+        #print(query)
+	    tot <- RMonetDBExecute(handle, query, autocommit=FALSE)
+    }
+    else {
+        # work out how many chunks
+        iter <- ceiling(rows/chunk)
+        tot <- 0
 
-    for (j in 1:iter) {
-        start = ((j - 1) * chunk) + 1
-        end = j * chunk
-        if (end > rows) 
-            end = rows
-        #print(paste("start: ", start))
-        #print(paste("end: ", end))
-        query <- c(paste("COPY ", (end - start + 1), ' RECORDS INTO "', tablename, '" FROM stdin USING DELIMITERS \'\\t\',\'\\n\',\'"\';', "\n", sep=""))
-        for (i in start:end) {
-            query <- append(query, paste(paste(lapply(table[i,], FUN=rmonetdb_val), collapse="\t"), "\n", sep=""))
+        for (j in 1:iter) {
+            start = ((j - 1) * chunk) + 1
+            end = j * chunk
+            if (end > rows)
+                end = rows
+            #print(paste("start: ", start))
+            #print(paste("end: ", end))
+            #query <- c(paste("COPY ", sprintf("%0d", (end - start + 1)), ' RECORDS INTO "', tablename, '" FROM stdin USING DELIMITERS \'\\t\',\'\\n\',\'"\';', "\n", sep=""))
+            out <- textConnection(NULL, open="a")
+            cat(paste("COPY ", sprintf("%0d", (end - start + 1)), ' RECORDS INTO "', tablename, '" FROM stdin USING DELIMITERS \'\\t\',\'\\n\',\'"\';', "\n", sep=""), file=out, fill=FALSE, append=TRUE)
+            #for (i in start:end) {
+                #query <- append(query, paste(paste(lapply(table[i,], FUN=rmonetdb_val), collapse="\t"), "\n", sep=""))
+            write.table(table[start:end,], file=out, sep="\t", na='NULL', row.names=FALSE, col.names=FALSE, append=TRUE, eol="\n")
+            #}
+            cat("\n", file=out, fill=FALSE, append=TRUE)
+            query <- paste(textConnectionValue(out), collapse="\n")
+            close(out)
+	        res <- RMonetDBExecute(handle, query, autocommit=FALSE)
+            tot = tot + res
         }
-        query <- paste(query, collapse="")
-	    res <- RMonetDBExecute(handle, query, autocommit=FALSE)
-        tot = tot + res
     }
     RMonetDBCommit(handle)
 
-    return(res)
+    return(tot)
 }
 
 

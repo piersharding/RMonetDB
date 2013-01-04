@@ -13,6 +13,8 @@ RMonetDBLoadDataFrame(conn, frame, "table name")
   \item{frame}{The data.frame to be loaded into a MonetDB table}
   \item{table name}{The table name to load the data.frame into}
   \item{drop}{optional - flag to indicate to drop the table if it exists before recreating on the load}
+  \item{tmp.file}{optional - flag to use write.csv and temp file instead of memory for table contents formatting - useful for largedata.frame processing}
+  \item{append}{optional - flag to indicate appending dta.frame to an existing table}
 }
 \details{
 

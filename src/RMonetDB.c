@@ -401,7 +401,7 @@ SEXP RMonetDBQuote(SEXP str)
     SEXP ans;
     //fprintf(stderr, "Quote: %s\n", CHAR(STRING_ELT(str, 0)));
     PROTECT(ans = allocVector(STRSXP, 1));
-    SET_STRING_ELT(ans, 0, mkstring(mapi_quote((char *)CHAR(STRING_ELT(str,0)), strlen(CHAR(STRING_ELT(str,0))))));
+    SET_STRING_ELT(ans, 0, mkstring(mapi_quote((char *)CHAR(STRING_ELT(AS_CHARACTER(str),0)), strlen(CHAR(STRING_ELT(AS_CHARACTER(str),0))))));
     UNPROTECT(1);
     return ans;
 }

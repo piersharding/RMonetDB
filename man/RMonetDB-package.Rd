@@ -39,6 +39,13 @@
   All Query results are returned as data.frame.
 }
 
+\note{
+  Please see the README and INSTALL file that come with RMonetDB - these
+  will give the latest info on how to install and test the package, 
+  inparticular details are given on how to setup the test database and 
+  run the test suite.
+}
+
 \author{
   Piers Harding
 }

@@ -22,7 +22,7 @@ Documentation:
 help(RMonetDB)
 
 Test suite:
-To run the test suite you must load the test 'voc' data base available at http://www.monetdb.org/Documentation/SQLrecipies
+To run the test suite you must load the test 'voc' data base available at http://www.monetdb.org/Documentation/Tutorial
 
 Or, alternatively, load the version supplied in the data directory by doing the following:
 
