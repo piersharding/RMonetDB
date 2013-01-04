@@ -1,0 +1,31 @@
+HowTo install RMonetDB
+======================
+
+The easiest way to install RMonetDB is to clone the repository and use
+R CMD INSTALL
+
+Dependencies:
+
+add the repositories:
+deb http://dev.monetdb.org/downloads/deb/ quantal monetdb
+deb-src http://dev.monetdb.org/downloads/deb/ quantal monetdb
+
+The repository keys can be obtained by:
+wget --output-document=- http://dev.monetdb.org/downloads/MonetDB-GPG-KEY | sudo apt-key add -
+
+Install the dependent MonetDB mapi client libraries:
+sudo apt-get install libmonetdb-stream-dev libmonetdb-client-dev
+
+
+Build:
+
+Then run the build and install command from the package root 
+directory:
+
+autoconf
+
+R CMD INSTALL --build --preclean --clean .
+
+This has been tested under Ubuntu 12.04 - how it builds on
+other platforms is unknown.
+

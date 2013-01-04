@@ -1,0 +1,6 @@
+dbhost: localhost
+dbport: "50000"
+dbuser: voc
+dbpass: voc
+dbname: voc
+loglevel: debug

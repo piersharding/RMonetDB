@@ -1,0 +1,67 @@
+
+RMonetDB - An R interface to the MonetDB in-memory column store
+---------------------------------------------------------------
+
+Copyright (C) Piers Harding 2012 - and beyond, All rights reserved
+
+== Summary
+
+Welcome to the RMonetDB R module.  This module is intended to facilitate SQL calls to the MonetDB database using the MAPI client library interface, and doing native conversions between column and data.frame types.
+
+Prerequisites:
+Please insure that YAML is installed:
+install.packages('yaml')
+
+Installation:
+See the file INSTALL for installation instructions.
+
+Examples:
+See the files in the tests/ directory.
+
+Documentation:
+help(RMonetDB)
+
+Test suite:
+To run the test suite you must load the test 'voc' data base available at http://www.monetdb.org/Documentation/SQLrecipies
+
+Or, alternatively, load the version supplied in the data directory by doing the following:
+
+sudo /etc/init.d/monetdb5-sql start
+sudo -u monetdb monetdb status
+
+sudo -u monetdb monetdb stop voc    # only if voc already exists
+sudo -u monetdb monetdb destroy voc # only if voc already exists
+sudo -u monetdb monetdb create voc
+sudo -u monetdb monetdb start voc
+sudo -u monetdb monetdb release voc
+sudo -u monetdb monetdb status
+
+gunzip -c ./voc-export-all.csv.gz | mclient -u monetdb -d voc
+
+The default password for the user 'monetdb' is 'monetdb'
+
+Once the 'voc' database is imported, the password for the user 'voc' is 'voc'
+
+login:
+mclient -h localhost -u voc -d voc
+
+To run the tests:
+rm run_tests.Rout; R CMD BATCH run_tests.R; more run_tests.Rout
+
+Bugs:
+I appreciate bug reports and patches, just mail me! piers@ompka.net
+
+RMonetDB is Copyright (c) 2012 - and beyond Piers Harding.
+It is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+A copy of the GNU Lesser General Public License (version 2.1) is included in
+the file COPYING.
+

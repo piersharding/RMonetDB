@@ -1,0 +1,56 @@
+dnl 
+dnl $Id$
+dnl
+dnl R embedding of the SQLite engine.
+dnl
+dnl Generate a "configure" script that will install the RSQLite
+dnl packge.  By default, we use embed the SQLite "amalgamation" that
+dnl is distributed with RSQLite.  Only if the user asks will we link
+dnl to a SQLite library already installed on the system.
+dnl
+dnl    USAGE:  autoconf
+dnl
+dnl Global variables:  
+dnl    PKG_CPPFLAGS and PKG_LIBS
+dnl
+dnl The resulting configure script implements the following logic:
+dnl
+dnl 1. If both PKG_CPPFLAGS and PKG_LIBS are defined, use them and exit.
+dnl
+dnl 2. If the user specifies explicitly a particular SQLite
+dnl    installation we use that version. This can be requested through 
+dnl         --with-sqlite-dir=DIR 
+dnl         --with-sqlite-inc=<include-DIR>
+dnl    or   --with-sqlite-lib=<library-DIR>
+dnl
+dnl    In the first case, DIR is assumed to include the lib and include
+dnl    subdirectories;  individual locations of these two may be 
+dnl    specified independently through <include-dir> and <library-dir>,
+dnl    respectively.  If we find these, we exit.
+dnl
+dnl 3. If the user did not specify a SQLite installation, we set a
+dnl    preprocessor define to include the SQLite amalgamation.
+dnl
+
+AC_INIT(src/RS-MonetDB.c)
+
+# As suggested by BDR, I may need to use CFLAGS to compile under 64-bit
+# (I can't test this), but see "Writing R Extensions"
+: ${R_HOME=`R RHOME`}
+if test -z "${R_HOME}"; then
+   echo "could not determine R_HOME"
+   exit 1
+fi
+CC=`"${R_HOME}/bin/R" CMD config CC`
+CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
+AC_PROG_CPP
+AC_PROG_CC
+PKG_LIBS=`pkg-config monetdb-mapi --libs`
+PKG_CPPFLAGS=`pkg-config monetdb-mapi --cflags`
+
+AC_SUBST(PKG_CPPFLAGS)
+AC_SUBST(PKG_LIBS)
+
+AC_OUTPUT(src/Makevars)
+
+exit 0

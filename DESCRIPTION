@@ -1,0 +1,17 @@
+Package: RMonetDB
+Version: 0.01
+Revision: $Rev: 3 $
+Date: 2012-12-24
+Author: Piers Harding
+Maintainer: Piers Harding <piers@ompka.net>
+Title: MonetDB SQL client interface 
+Description: MonetDB SQL Client interface based on Monet MAPI library
+SystemRequirements: 
+Depends: R (>= 2.12.0), methods, utils, yaml
+Imports: stats
+LazyLoad: yes
+License: GPL-2 | GPL-3
+BuildVignettes: no
+Packaged: 2012-12-24 06:01:02 UTC; piers
+Repository: CRAN
+Date/Publication: 2012-12-24 06:03:14
