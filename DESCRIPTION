@@ -1,7 +1,7 @@
 Package: RMonetDB
-Version: 0.01
+Version: 0.02
 Revision: $Rev: 3 $
-Date: 2012-12-24
+Date: 2013-01-31
 Author: Piers Harding
 Maintainer: Piers Harding <piers@ompka.net>
 Title: MonetDB SQL client interface 
@@ -12,6 +12,6 @@ Imports: stats
 LazyLoad: yes
 License: GPL-2 | GPL-3
 BuildVignettes: no
-Packaged: 2012-12-24 06:01:02 UTC; piers
+Packaged: 2013-01-31 12:33:00 UTC; piers
 Repository: CRAN
-Date/Publication: 2012-12-24 06:03:14
+Date/Publication: 2012-01-31 12:33:00

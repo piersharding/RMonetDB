@@ -505,7 +505,7 @@ SEXP RMonetDBQuery(SEXP handle, SEXP sql, SEXP parameters, SEXP autocommit, SEXP
             return(ans);
             //return(R_NilValue);
         }
-        // cleanup paramtere pointers
+        // cleanup parameter pointers
         for (i=0; i<=MAX_PARAMS; i++) {
             query_parameters[i] = NULL;
         }
@@ -521,10 +521,10 @@ SEXP RMonetDBQuery(SEXP handle, SEXP sql, SEXP parameters, SEXP autocommit, SEXP
 
     rows = mapi_fetch_all_rows(hdl);
     idx = mapi_get_field_count(hdl);
-    //fprintf(stderr, "rows received %lld with %d fields\n", rows, idx);
+    // fprintf(stderr, "rows received %lld with %d fields\n", rows, idx);
 
 
-//    fprintf(stderr, "return parameters: %d \n", idx);
+    // fprintf(stderr, "return parameters: %d \n", idx);
     if (rows > 0) {
         PROTECT(ans = allocVector(VECSXP, idx));
         PROTECT(ansnames = allocVector(STRSXP, idx));
@@ -534,15 +534,15 @@ SEXP RMonetDBQuery(SEXP handle, SEXP sql, SEXP parameters, SEXP autocommit, SEXP
             if (mapi_seek_row(hdl, i, MAPI_SEEK_SET) || mapi_fetch_row(hdl) == 0)
                 break;
     
-            //fprintf(stderr, "row: %d\n", i);
+            // fprintf(stderr, "row: %d\n", i);
 
             // for the first row build out the dataframe structure
             if (first) {
                 first = false;
                 for (j = 0; j < idx; j++) {
-                    // fprintf(stderr, "setting field: %d\n", j);
                     SET_STRING_ELT(ansnames, j, mk_string(mapi_get_name(hdl, j)));
                     tp = mapi_get_type(hdl, j);
+                    // fprintf(stderr, "setting field: %d - type: %s \n", j, tp);
                     if (strcmp(tp, "double") == 0 ||
                         strcmp(tp, "dbl") == 0 ||
                         strcmp(tp, "real") == 0 ||
@@ -571,6 +571,7 @@ SEXP RMonetDBQuery(SEXP handle, SEXP sql, SEXP parameters, SEXP autocommit, SEXP
             // process each field of each row
             for (j = 0; j < idx; j++) {
                 tp = mapi_get_type(hdl, j);
+                // fprintf(stderr, "outputing field: %d - type: %s \n", j, tp);
                 if (strcmp(tp, "double") == 0 ||
                     strcmp(tp, "dbl") == 0 ||
                     strcmp(tp, "real") == 0 ||
@@ -584,8 +585,8 @@ SEXP RMonetDBQuery(SEXP handle, SEXP sql, SEXP parameters, SEXP autocommit, SEXP
                     strcmp(tp, "surface") == 0) {
                        //strtod
                     //REAL(VECTOR_ELT(ans, j))[i] = REAL(atof(mapi_fetch_field(hdl, j)))[0];
-                    //fprintf(stderr, "do REAL: %d\n", j);
-                    if (strcmp(mapi_fetch_field(hdl, j), "null") == 0) {
+                    if (mapi_fetch_field(hdl, j) != NULL) {
+                        // fprintf(stderr, "do REAL: %d - %s \n", j, mapi_fetch_field(hdl, j));
                         REAL(VECTOR_ELT(ans, j))[i] = atof(mapi_fetch_field(hdl, j));
                     }
                     else {
