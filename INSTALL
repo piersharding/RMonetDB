@@ -17,13 +17,42 @@ Install the dependent MonetDB mapi client libraries:
 sudo apt-get install libmonetdb-stream-dev libmonetdb-client-dev
 
 
-Build:
+First Option:
 
-Then run the build and install command from the package root 
+Using devtools, you can directly install the package from GitHub.
+From R:
+
+install.packages('devtools')
+library(devtools)
+install_github('RMonetDB', username='piersharding', args=c("--configure-args='--with-mapi-include=/usr/include/monetdb --with-mapi-lib=.'"))
+
+The args= value passed in must correspond to the correct location for your setup for the INCLUDE and LIB paths to the MonetDB mapi client library.
+
+You must ensure that all your installed packages (especially httr, and stringr) are up to date.  The easiest way to do this is to start R and:
+
+update.packages()
+
+
+
+Second Option:
+
+Set the environment variables that locate the INCLUDE and LIB
+directories (change these to your own):
+
+export MAPI_INCLUDE=/usr/include/monetdb
+export MAPI_LIBS=.
+
+Download the package from GitHub -
+either:
+git clone git@github.com:piersharding/RSAP.git
+
+or:
+retrieve and unpack https://github.com/piersharding/RSAP/archive/master.zip
+
+Then run the build and install command from the package root
 directory:
 
 autoconf
-
 R CMD INSTALL --build --preclean --clean .
 
 This has been tested under Ubuntu 12.04 - how it builds on
