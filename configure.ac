@@ -6,7 +6,7 @@ dnl Select an optional include path, from a configure option
 dnl or from an environment variable.
 AC_ARG_WITH([mapi-include],
             AC_HELP_STRING([--with-mapi-include=INCLUDE_PATH],
-                           [the location of SAP NW RFCSDK header files]),
+                           [the location of MonetDB client mapi header files]),
             [mapi_include_path=$withval])
 RMonetDB_CPPFLAGS="-I."
 if test [ -n "$mapi_include_path" ] ; then
@@ -20,7 +20,7 @@ fi
 dnl ditto for a library path
 AC_ARG_WITH([mapi-lib],
             AC_HELP_STRING([--with-mapi-lib=LIB_PATH],
-                           [the location of SAP NW RFCSDK libraries]),
+                           [the location of MonetDB client mapi libraries]),
             [mapi_lib_path=$withval])
 if test [ -n "$mapi_lib_path" ] ; then
    LIBS="-L${mapi_lib_path} ${LIBS}"
