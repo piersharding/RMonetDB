@@ -1,6 +1,6 @@
 # original by Friedrich Leisch, much changed by BDR
 
-AC_INIT([RMonetDB], 0.0.1, [piers@ompka.net])
+AC_INIT([RMonetDB], 0.0.2, [piers@ompka.net])
 
 dnl Select an optional include path, from a configure option
 dnl or from an environment variable.
@@ -18,6 +18,7 @@ else
 fi
 
 dnl ditto for a library path
+LIBS="-lmapi "
 AC_ARG_WITH([mapi-lib],
             AC_HELP_STRING([--with-mapi-lib=LIB_PATH],
                            [the location of MonetDB client mapi libraries]),
@@ -39,14 +40,17 @@ fi
 CC=`"${R_HOME}/bin/R" CMD config CC`
 CPP=`"${R_HOME}/bin/R" CMD config CPP`
 CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
-RMonetDB_EXT_CPPFLAGS=`"${R_HOME}/bin/R" CMD config --cppflags`
+RMONETDB_EXT_CPPFLAGS=`"${R_HOME}/bin/R" CMD config --cppflags`
 CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
 EXTCPPFLAGS=`"${R_HOME}/bin/R" CMD config --cppflags`
 
 PKG_LIBS=`pkg-config monetdb-mapi --libs`
 PKG_CPPFLAGS=`pkg-config monetdb-mapi --cflags`
 
-CPPFLAGS="${CPPFLAGS} ${PKG_CPPFLAGS} ${RMonetDB_CPPFLAGS}"
+CPPFLAGS="${CPPFLAGS} ${CFLAGS}  ${EXTCPPFLAGS} ${PKG_CPPFLAGS} ${RMONETDB_CPPFLAGS}"
+PKG_CPPFLAGS="${PKG_CPPFLAGS} ${EXTCPPFLAGS} "
+
+echo "All base CPP flags are: ${CPPFLAGS} "
 
 dnl Check the headers can be found
 AC_CHECK_HEADERS(mapi.h)
@@ -55,6 +59,7 @@ if test "${ac_cv_header_monetdb_h}" = no; then
 fi
 
 LIBS="${LIBS} ${PKG_LIBS} -lmapi "
+PKG_LIBS="${LIBS}"
 AC_TRY_LINK(
    [
     #include <mapi.h>
@@ -71,17 +76,16 @@ AC_TRY_LINK(
 dnl for unixODBC header
 AC_CHECK_SIZEOF(long, 4)
 
-RMonetDB_CPPFLAGS="${RMonetDB_CPPFLAGS} ${RMonetDB_EXT_CPPFLAGS} "
-echo "HERE: ${RMonetDB_CPPFLAGS}"
+RMONETDB_CPPFLAGS="${RMONETDB_CPPFLAGS} ${RMONETDB_EXT_CPPFLAGS} "
+echo "Final RMonetDB flags are: ${RMONETDB_CPPFLAGS}"
 
 dnl substitute RMonetDB_CPPFLAGS and LIBS
-AC_SUBST(RMonetDB_CPPFLAGS)
+AC_SUBST(RMONETDB_CPPFLAGS)
+AC_SUBST(PKG_CPPFLAGS)
 AC_SUBST(CPPFLAGS)
+AC_SUBST(PKG_LIBS)
 AC_SUBST(LIBS)
 AC_CONFIG_HEADERS([src/config.h])
-
-AC_SUBST(PKG_CPPFLAGS)
-AC_SUBST(PKG_LIBS)
 
 dnl and do subsitution in the src/Makevars.in and src/config.h
 AC_CONFIG_FILES([src/Makevars])

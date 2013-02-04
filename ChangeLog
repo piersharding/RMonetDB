@@ -2,7 +2,10 @@ Version: 0.01 (2012-12-10, released)
 
 	* initial version
 
-Version: 0.02 (2013-01-31, released)
+Version: 0.2 (2013-01-31, released)
 
 	* Fix missing REAL numbers
 
+Version: 0.3 (2013-02-05, released)
+
+	* Fix build process 
