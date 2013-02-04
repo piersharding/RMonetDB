@@ -14,27 +14,27 @@
   Read and write to tables in the MonetDB in-memory column store DB, using
   SQL over the MonetDB MAPI client library
 
-  conn <- RMonetDBConnect("db.yml")
+  con <- RMonetDBConnect("db.yml")
 
   or 
 
-  conn <- RMonetDBConnect(dbhost="localhost",
+  con <- RMonetDBConnect(dbhost="localhost",
                           dbuser="voc",
                           dbpass="voc",
                           dbname="voc")
 
-  info = RMonetDBGetInfo(conn)
+  info = RMonetDBGetInfo(con)
   print(info)
 
   parms <- list(3, 50)
   qry <- "SELECT * FROM voc.craftsmen WHERE trip > ? LIMIT ?"
 
-  res <- RMonetDBQuery(conn, qry, parms)
+  res <- RMonetDBQuery(con, qry, parms)
   print(res)
   # alternative shorthand
-  res <- dbquery(conn, qry, parms)
+  res <- dbquery(con, qry, parms)
   print(res)
-  RMonetDBClose(conn)
+  RMonetDBClose(con)
 
   All Query results are returned as data.frame.
 }

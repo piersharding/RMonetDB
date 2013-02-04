@@ -5,17 +5,17 @@
   Start an SQL transaction with "START TRANSACTION"
 }
 \usage{
-RMonetDBStartTransaction(conn)
+RMonetDBStartTransaction(con)
 }%"
 \arguments{
-  \item{conn}{an Open MonetDB Connection handle}
+  \item{con}{an Open MonetDB Connection handle}
 }
 \details{
 
-  conn <- RMonetDBConnect("db.yml")
-  RMonetDBStartTransaction(conn)
+  con <- RMonetDBConnect("db.yml")
+  RMonetDBStartTransaction(con)
   ...
-  RMonetDBClose(conn)
+  RMonetDBClose(con)
 
 }
 
@@ -29,7 +29,7 @@ RMonetDBStartTransaction(conn)
 
 \examples{\dontrun{
 # Start an SQL transaction
-RMonetDBStartTransaction(conn)
+RMonetDBStartTransaction(con)
 }}
 
 \author{

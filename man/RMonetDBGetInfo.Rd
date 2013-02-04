@@ -5,10 +5,10 @@
   get connection details regarding the nominated MonetDB connection
 }
 \usage{
-RMonetDBGetInfo(conn)
+RMonetDBGetInfo(con)
 }%"
 \arguments{
-  \item{conn}{an Open MonetDB Connection handle}
+  \item{con}{an Open MonetDB Connection handle}
 }
 \details{
   \code{RMonetDBGetInfo} get connection details 
@@ -23,7 +23,7 @@ RMonetDBGetInfo(conn)
 }
 \examples{\dontrun{
 # Close the connection
-info <- RMonetDBGetInfo(conn)
+info <- RMonetDBGetInfo(con)
 print(info)
 }}
 

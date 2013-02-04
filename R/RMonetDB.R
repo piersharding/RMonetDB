@@ -63,89 +63,89 @@ RMonetDBshowArgs <-
     return(res)
 }
 
-RMonetDBIsConnected <-  function(handle)
+RMonetDBIsConnected <-  function(con)
 {
-    if (!is.integer(handle)) {
+    if (!is.integer(con)) {
         #print("RMonetDBIsConnected: handle is not an integer")
         return(FALSE)
     }
-    if (!is.element("handle_ptr", names(attributes(handle)))) {
+    if (!is.element("handle_ptr", names(attributes(con)))) {
         #print("RMonetDBIsConnected: handle_ptr does not exist")
         return(FALSE)
     }
-    res <- .Call(C_RMonetDBIsConnected, handle)
+    res <- .Call(C_RMonetDBIsConnected, con)
     return(res)
 }
 
 
-RMonetDBGetInfo <- function(handle)
+RMonetDBGetInfo <- function(con)
 {
-    if(!RMonetDBIsConnected(handle))
+    if(!RMonetDBIsConnected(con))
        stop("RMonetDBGetInfo: argument is not a valid RMonetDB handle")
-    res <- .Call(C_RMonetDBGetInfo, handle)
+    res <- .Call(C_RMonetDBGetInfo, con)
     return(res)
 }
 
 
-RMonetDBExecute <- function(handle, sql, autocommit=TRUE, lastid=FALSE, try=FALSE)
+RMonetDBExecute <- function(con, sql, autocommit=TRUE, lastid=FALSE, try=FALSE)
 {
-    if(!RMonetDBIsConnected(handle))
+    if(!RMonetDBIsConnected(con))
        stop("argument is not a valid RMonetDB handle")
-    res <- .Call(C_RMonetDBExecute, handle, sql, autocommit, lastid, try)
+    res <- .Call(C_RMonetDBExecute, con, sql, autocommit, lastid, try)
     return(res)
 }
 
 
-RMonetDBStartTransaction <- function(handle)
+RMonetDBStartTransaction <- function(con)
 {
-    if(!RMonetDBIsConnected(handle))
+    if(!RMonetDBIsConnected(con))
        stop("argument is not a valid RMonetDB handle")
-	res <- RMonetDBExecute(handle, "START TRANSACTION", autocommit=TRUE)
+	res <- RMonetDBExecute(con, "START TRANSACTION", autocommit=TRUE)
     return(res)
 }
 
 
-RMonetDBCommit <- function(handle)
+RMonetDBCommit <- function(con)
 {
-    if(!RMonetDBIsConnected(handle))
+    if(!RMonetDBIsConnected(con))
        stop("argument is not a valid RMonetDB handle")
-	res <- RMonetDBExecute(handle, "COMMIT", autocommit=FALSE)
+	res <- RMonetDBExecute(con, "COMMIT", autocommit=FALSE)
     return(res)
 }
 
 
-RMonetDBRollback <- function(handle)
+RMonetDBRollback <- function(con)
 {
-    if(!RMonetDBIsConnected(handle))
+    if(!RMonetDBIsConnected(con))
        stop("argument is not a valid RMonetDB handle")
-	res <- RMonetDBExecute(handle, "ROLLBACK", autocommit=FALSE)
+	res <- RMonetDBExecute(con, "ROLLBACK", autocommit=FALSE)
     return(res)
 }
 
 
-RMonetDBExists <- function(handle, tablename)
+RMonetDBExists <- function(con, tablename)
 {
-    if(!RMonetDBIsConnected(handle))
+    if(!RMonetDBIsConnected(con))
        stop("argument is not a valid RMonetDB handle")
     exists <- paste('SELECT * FROM "', tablename, '" WHERE 1=0', sep="")
-	res <- RMonetDBExecute(handle, exists, autocommit=FALSE, try=TRUE)
+	res <- RMonetDBExecute(con, exists, autocommit=FALSE, try=TRUE)
     return(res)
 }
 
 
-RMonetDBListTables <- function(handle)
+RMonetDBListTables <- function(con)
 {
-    if(!RMonetDBIsConnected(handle))
+    if(!RMonetDBIsConnected(con))
        stop("argument is not a valid RMonetDB handle")
     sql <- "SELECT \"o\".\"name\" AS name, (CASE \"o\".\"type\" WHEN 0 THEN 'TABLE' WHEN 1 THEN 'VIEW' ELSE '' END) AS \"type\", \"o\".\"query\" AS query FROM \"sys\".\"_tables\" o, \"sys\".\"schemas\" s WHERE \"o\".\"schema_id\" = \"s\".\"id\" AND \"o\".\"type\" IN (0,1) AND \"s\".\"name\" = \"current_schema\""
-	res <- RMonetDBQuery(handle, sql, autocommit=FALSE)
+	res <- RMonetDBQuery(con, sql, autocommit=FALSE)
     return(res)
 }
 
 
-RMonetDBListFields <- function(handle, tablename, schema="")
+RMonetDBListFields <- function(con, tablename, schema="")
 {
-    if(!RMonetDBIsConnected(handle))
+    if(!RMonetDBIsConnected(con))
        stop("argument is not a valid RMonetDB handle")
     if (nchar(schema) > 0) {
         schema <- paste(" AND \"s\".\"name\" = '", schema, "' ", sep="")
@@ -155,17 +155,17 @@ RMonetDBListFields <- function(handle, tablename, schema="")
     }
     #sql <- paste("SELECT * FROM \"", tablename, "\" LIMIT 1", sep="")
     sql <- paste("SELECT \"s\".\"name\" AS \"schema\", \"t\".\"name\" AS \"table\", \"c\".\"name\" AS \"column\", \"c\".\"type\", \"c\".\"type_digits\", \"c\".\"type_scale\", \"c\".\"null\", \"c\".\"default\", \"c\".\"number\" FROM \"sys\".\"_columns\" \"c\", \"sys\".\"_tables\" \"t\", \"sys\".\"schemas\" \"s\" WHERE \"c\".\"table_id\" = \"t\".\"id\" AND '", tablename, "' = \"t\".\"name\"", schema, " AND \"t\".\"schema_id\" = \"s\".\"id\" ORDER BY \"schema\", \"number\"", sep="")
-	res <- RMonetDBQuery(handle, sql, autocommit=FALSE)
+	res <- RMonetDBQuery(con, sql, autocommit=FALSE)
     return(res)
 }
 
 
-RMonetDBQuery <- function(handle, sql, parameters=list(), autocommit=FALSE, lastid=FALSE, page=FALSE)
+RMonetDBQuery <- function(con, sql, parameters=list(), autocommit=FALSE, lastid=FALSE, page=FALSE)
 {
-    if(!RMonetDBIsConnected(handle))
+    if(!RMonetDBIsConnected(con))
        stop("argument is not a valid RMonetDB handle")
 	parameters <- as.list(as.character(parameters))
-    res <- .Call(C_RMonetDBQuery, handle, sql, parameters, autocommit, lastid, page)
+    res <- .Call(C_RMonetDBQuery, con, sql, parameters, autocommit, lastid, page)
     return(res)
 }
 
@@ -240,17 +240,17 @@ rmonetdb_val <- function(val)
 }
 
 
-RMonetDBLoadDataFrame <- function(handle, table, tablename, drop=FALSE, chunk=500000, tmp.file=FALSE, append=FALSE)
+RMonetDBLoadDataFrame <- function(con, frame, tablename, drop=FALSE, chunk=500000, tmp.file=FALSE, append=FALSE)
 {
-    if(!RMonetDBIsConnected(handle))
+    if(!RMonetDBIsConnected(con))
        stop("argument is not a valid RMonetDB handle")
-	table <- as.data.frame(table)
+	frame <- as.data.frame(frame)
 	tablename <- as.character(tablename)
-    cols <- paste(lapply(names(table), FUN=function (x) {return(rmonetdb_col(x, typeof(table[[x]]), max(unlist(lapply(as.character(table[[x]]), FUN=nchar))), is.factor(table[[x]])))}), collapse=", ")
+    cols <- paste(lapply(names(frame), FUN=function (x) {return(rmonetdb_col(x, typeof(frame[[x]]), max(unlist(lapply(as.character(frame[[x]]), FUN=nchar))), is.factor(frame[[x]])))}), collapse=", ")
     create <- paste('CREATE TABLE "', tablename, '" (', cols, ')', sep="") 
-    there <- RMonetDBExists(handle, tablename)
+    there <- RMonetDBExists(con, tablename)
     # wrap the whole thing in a single transaction
-    RMonetDBStartTransaction(handle)
+    RMonetDBStartTransaction(con)
     if (append) {
         if (!there)
             stop("table must exist in append mode")
@@ -260,15 +260,15 @@ RMonetDBLoadDataFrame <- function(handle, table, tablename, drop=FALSE, chunk=50
             # check if table exists first
             if (there) {
                 delete <- paste('DROP TABLE "', tablename, '"', sep="")
-	            res <- RMonetDBExecute(handle, delete, autocommit=FALSE)
+	            res <- RMonetDBExecute(con, delete, autocommit=FALSE)
             }
         }
 
-	    res <- RMonetDBExecute(handle, create, autocommit=FALSE)
+	    res <- RMonetDBExecute(con, create, autocommit=FALSE)
     }
 
     # calculate the values for the rows
-    rows <- length(table[[1]])
+    rows <- length(frame[[1]])
 
     # must have some rows
     if (rows == 0) {
@@ -279,11 +279,11 @@ RMonetDBLoadDataFrame <- function(handle, table, tablename, drop=FALSE, chunk=50
         tmpfile <- paste("/tmp/", tablename,".tmp.csv", sep="")
         query <- paste("COPY ", sprintf("%0d", rows), ' RECORDS INTO "', tablename, '" FROM stdin USING DELIMITERS \'\\t\',\'\\n\',\'"\';', "\n", sep="")
         cat(query, file=tmpfile)
-        write.table(table, file=tmpfile, sep="\t", na='NULL', row.names=FALSE, col.names=FALSE, append=TRUE, eol="\n")
+        write.table(frame, file=tmpfile, sep="\t", na='NULL', row.names=FALSE, col.names=FALSE, append=TRUE, eol="\n")
         cat("\n", file=tmpfile, fill=FALSE, append=TRUE)
         query <- paste(readLines(tmpfile), collapse="\n")
         #print(query)
-	    tot <- RMonetDBExecute(handle, query, autocommit=FALSE)
+	    tot <- RMonetDBExecute(con, query, autocommit=FALSE)
     }
     else {
         # work out how many chunks
@@ -302,16 +302,16 @@ RMonetDBLoadDataFrame <- function(handle, table, tablename, drop=FALSE, chunk=50
             cat(paste("COPY ", sprintf("%0d", (end - start + 1)), ' RECORDS INTO "', tablename, '" FROM stdin USING DELIMITERS \'\\t\',\'\\n\',\'"\';', "\n", sep=""), file=out, fill=FALSE, append=TRUE)
             #for (i in start:end) {
                 #query <- append(query, paste(paste(lapply(table[i,], FUN=rmonetdb_val), collapse="\t"), "\n", sep=""))
-            write.table(table[start:end,], file=out, sep="\t", na='NULL', row.names=FALSE, col.names=FALSE, append=TRUE, eol="\n")
+            write.table(frame[start:end,], file=out, sep="\t", na='NULL', row.names=FALSE, col.names=FALSE, append=TRUE, eol="\n")
             #}
             cat("\n", file=out, fill=FALSE, append=TRUE)
             query <- paste(textConnectionValue(out), collapse="\n")
             close(out)
-	        res <- RMonetDBExecute(handle, query, autocommit=FALSE)
+	        res <- RMonetDBExecute(con, query, autocommit=FALSE)
             tot = tot + res
         }
     }
-    RMonetDBCommit(handle)
+    RMonetDBCommit(con)
 
     return(tot)
 }
@@ -330,59 +330,59 @@ RMonetDBUnQuote <- function(str)
     return(res)
 }
 
-print.RMonetDB_Connector <- function(conn, ...) RMonetDBGetInfo(conn)
+print.RMonetDB_Connector <- function(x, ...) RMonetDBGetInfo(x)
 
-close.RMonetDB_Connector <- function(conn, ...) RMonetDBClose(conn)
+close.RMonetDB_Connector <- function(con, ...) RMonetDBClose(con)
 
-RMonetDBClose <- function(handle)
+RMonetDBClose <- function(con)
 {
-    if(!RMonetDBIsConnected(handle))
+    if(!RMonetDBIsConnected(con))
        stop("argument is not a connected RMonetDB handle")
-    res <- .Call(C_RMonetDBClose, handle)
+    res <- .Call(C_RMonetDBClose, con)
     return(res)
 }
 
 if (!exists("dbwrite")) {
-    dbwrite <- function(conn, ...){
-              res <-  RMonetDBLoadDataFrame(conn, ...)
+    dbwrite <- function(con, ...){
+              res <-  RMonetDBLoadDataFrame(con, ...)
               return(res)
           }
 }
 
 if (!exists("dbquery")) {
-    dbquery <- function(conn, ...){
-              res <-  RMonetDBQuery(conn, ...)
+    dbquery <- function(con, ...){
+              res <-  RMonetDBQuery(con, ...)
               return(res)
           }
 }
 
 if (!exists("dbexecute")) {
-    dbexecute <- function(conn, ...){
-              res <-  RMonetDBExecute(conn, ...)
+    dbexecute <- function(con, ...){
+              res <-  RMonetDBExecute(con, ...)
               return(res)
           }
 }
 
-setClass("RMonetDB_Connector")
-setMethod("dbwrite", "RMonetDB_Connector",
-          def = function(conn, ...){
-              res <-  RMonetDBLoadDataFrame(conn, ...)
-              return(res)
-          },
-          valueClass = "data.frame"
-        )
-setMethod("dbquery", "RMonetDB_Connector",
-          def = function(conn, ...){
-              res <-  RMonetDBQuery(conn, ...)
-              return(res)
-          },
-          valueClass = "data.frame"
-        )
-setMethod("dbexecute", "RMonetDB_Connector",
-          def = function(conn, ...){
-              res <-  RMonetDBExecute(conn, ...)
-              return(res)
-          },
-          valueClass = "data.frame"
-        )
+#setClass("RMonetDB_Connector")
+#setMethod("dbwrite", "RMonetDB_Connector",
+#          def = function(con, ...){
+#              res <-  RMonetDBLoadDataFrame(con, ...)
+#              return(res)
+#          },
+#          valueClass = "data.frame"
+#        )
+#setMethod("dbquery", "RMonetDB_Connector",
+#          def = function(con, ...){
+#              res <-  RMonetDBQuery(con, ...)
+#              return(res)
+#          },
+#          valueClass = "data.frame"
+#        )
+#setMethod("dbexecute", "RMonetDB_Connector",
+#          def = function(con, ...){
+#              res <-  RMonetDBExecute(con, ...)
+#              return(res)
+#          },
+#          valueClass = "data.frame"
+#        )
 

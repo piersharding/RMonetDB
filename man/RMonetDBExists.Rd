@@ -6,21 +6,21 @@
   Run a check to see if a table exists
 }
 \usage{
-RMonetDBExists(conn, "table name")
+RMonetDBExists(con, tablename)
 }%"
 \arguments{
-  \item{conn}{an Open MonetDB Connection handle}
-  \item{table name}{The name of a table to check}
+  \item{con}{an Open MonetDB Connection handle}
+  \item{tablename}{The name of a table to check}
 }
 \details{
 
   \preformatted{
-  conn = RMonetDBConnect("db.yml")
+  con = RMonetDBConnect("db.yml")
 
-  res <- RMonetDBExists(conn, "craftsmen")
+  res <- RMonetDBExists(con, "craftsmen")
   print(res)
 
-  RMonetDBClose(conn)
+  RMonetDBClose(con)
   }
 }
 
@@ -33,7 +33,7 @@ RMonetDBExists(conn, "table name")
 }
 \examples{\dontrun{
 # Check if the voc.craftsmen table exists
-  res <- RMonetDBExists(conn, "craftsmen")
+  res <- RMonetDBExists(con, "craftsmen")
   print(res)
 }}
 

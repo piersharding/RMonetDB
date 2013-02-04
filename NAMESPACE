@@ -19,18 +19,14 @@ export(
        RMonetDBQuery,
        RMonetDBQuote,
        RMonetDBUnQuote,
-       RMonetDBLoadDataFrame
+       RMonetDBLoadDataFrame,
+       dbquery,
+       dbexecute,
+       dbwrite
 )
 
 exportClasses(
               RMonetDB_Connector
-)
-
-
-exportMethods(
-              dbquery,
-              dbexecute,
-              dbwrite
 )
 
 S3method(print, "RMonetDB_Connector")

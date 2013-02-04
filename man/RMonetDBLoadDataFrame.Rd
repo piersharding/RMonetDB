@@ -6,22 +6,23 @@
   Load a data.frame object into a MonetDB table with automatic schema detection
 }
 \usage{
-RMonetDBLoadDataFrame(conn, frame, "table name")
+RMonetDBLoadDataFrame(con, frame, tablename, drop=FALSE, chunk=500000, tmp.file = FALSE, append = FALSE)
 }%"
 \arguments{
-  \item{conn}{an Open MonetDB Connection handle}
+  \item{con}{an Open MonetDB Connection handle}
   \item{frame}{The data.frame to be loaded into a MonetDB table}
-  \item{table name}{The table name to load the data.frame into}
+  \item{tablename}{The table name to load the data.frame into}
   \item{drop}{optional - flag to indicate to drop the table if it exists before recreating on the load}
+  \item{chunk}{optional - the number of records to process in each block - default 500,000}
   \item{tmp.file}{optional - flag to use write.csv and temp file instead of memory for table contents formatting - useful for largedata.frame processing}
   \item{append}{optional - flag to indicate appending dta.frame to an existing table}
 }
 \details{
 
-  conn <- RMonetDBConnect("db.yml")
-  res <- RMonetDBLoadDataFrame(conn, craftsmen, "tmp_craftsmen")
+  con <- RMonetDBConnect("db.yml")
+  res <- RMonetDBLoadDataFrame(con, craftsmen, "tmp_craftsmen")
   print(res)
-  RMonetDBClose(conn)
+  RMonetDBClose(con)
 
 }
 
@@ -35,7 +36,7 @@ RMonetDBLoadDataFrame(conn, frame, "table name")
 
 \examples{\dontrun{
 # Close the connection
-RMonetDBLoadDataFrame(conn, my.frame, "tmp_tab", drop=TRUE)
+RMonetDBLoadDataFrame(con, my.frame, "tmp_tab", drop=TRUE)
 }}
 
 \author{

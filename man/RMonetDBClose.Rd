@@ -5,10 +5,10 @@
   Close an open connection to a MonetDB Database
 }
 \usage{
-RMonetDBClose(conn)
+RMonetDBClose(con)
 }%"
 \arguments{
-  \item{conn}{an Open MonetDB Connection handle}
+  \item{con}{an Open MonetDB Connection handle}
 }
 \details{
   \code{RMonetDBClose} closes aspecific connection to a MonetDB database

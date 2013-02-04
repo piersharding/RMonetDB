@@ -5,10 +5,10 @@
   Unquote an SQL encoded string
 }
 \usage{
-RMonetDBUnQuote("string")
+RMonetDBUnQuote(str)
 }%"
 \arguments{
-  \item{string}{string that has been quote escaped for SQL}
+  \item{str}{string that has been quote escaped for SQL}
 }
 \details{
 

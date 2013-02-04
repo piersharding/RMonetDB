@@ -6,7 +6,7 @@ Copyright (C) Piers Harding 2012 - and beyond, All rights reserved
 
 == Summary
 
-Welcome to the RMonetDB R module.  This module is intended to facilitate SQL calls to the MonetDB database using the MAPI client library interface, and doing native conversions between column and data.frame types.
+Welcome to the RMonetDB R module.  This module is intended to facilitate SQL calls to the MonetDB database using the MAPI client library interface (http://www.monetdb.org/Documentation/Manuals/SQLreference/Programming/MAPI), and doing native conversions between column and data.frame types.
 
 Prerequisites:
 Please insure that YAML is installed:

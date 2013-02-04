@@ -5,17 +5,17 @@
       List tables available in the current MonetDB connection
 }
 \usage{
-RMonetDBListTables(conn)
+RMonetDBListTables(con)
 }%"
 \arguments{
-  \item{conn}{an Open MonetDB Connection handle}
+  \item{con}{an Open MonetDB Connection handle}
 }
 \details{
 
-  conn <- RMonetDBConnect("db.yml")
-  res <- RMonetDBListTables(conn)
+  con <- RMonetDBConnect("db.yml")
+  res <- RMonetDBListTables(con)
   print(res)
-  RMonetDBClose(conn)
+  RMonetDBClose(con)
 
 }
 
@@ -28,7 +28,7 @@ RMonetDBListTables(conn)
 }
 \examples{\dontrun{
 # List tables
-RMonetDBListTables(conn)
+RMonetDBListTables(con)
 }}
 
 \author{

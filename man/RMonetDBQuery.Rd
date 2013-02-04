@@ -6,11 +6,11 @@
   Run arbitrary SQL queries against the MonetDB and return the results as a data.frame
 }
 \usage{
-RMonetDBQuery(conn, "SELECT * FROM craftsmen")
+RMonetDBQuery(con, sql, parameters=list(), autocommit=FALSE, lastid=FALSE, page=FALSE)
 }%"
 \arguments{
-  \item{conn}{an Open MonetDB Connection handle}
-  \item{SQL}{Arbitrary SQL to execute}
+  \item{con}{an Open MonetDB Connection handle}
+  \item{sql}{Arbitrary SQL to execute}
   \item{parameters}{list of string values substituted into the ? placeholders}
   \item{autocommit}{optional - boolean flag TRUE to auto commit}
   \item{lastid}{optional - boolean flag TRUE to return the last row ID affected - good for INSERT statements}
@@ -18,11 +18,11 @@ RMonetDBQuery(conn, "SELECT * FROM craftsmen")
 }
 \details{
   \preformatted{
-  conn <- RMonetDBConnect("db.yml")
-  res <- RMonetDBQuery(conn,  "SELECT * FROM voc.craftsmen WHERE trip > ? LIMIT ?", list(3,15))
+  con <- RMonetDBConnect("db.yml")
+  res <- RMonetDBQuery(con,  "SELECT * FROM voc.craftsmen WHERE trip > ? LIMIT ?", list(3,15))
   print(res)
 
-  RMonetDBClose(conn)
+  RMonetDBClose(con)
   }
 
 }
@@ -36,7 +36,7 @@ RMonetDBQuery(conn, "SELECT * FROM craftsmen")
 }
 \examples{\dontrun{
 # read the VOC craftsmen table with parameter substitutions
-RMonetDBQuery(conn,  "SELECT * FROM voc.craftsmen WHERE trip > ? LIMIT ?", list(3,15))
+RMonetDBQuery(con,  "SELECT * FROM voc.craftsmen WHERE trip > ? LIMIT ?", list(3,15))
 }}
 
 \author{

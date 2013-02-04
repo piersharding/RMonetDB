@@ -5,10 +5,10 @@
   Quote escape a string ready for SQL input
 }
 \usage{
-RMonetDBQuote("string")
+RMonetDBQuote(str)
 }%"
 \arguments{
-  \item{string}{String requiring SQL escaping}
+  \item{str}{String requiring SQL escaping}
 }
 \details{
 

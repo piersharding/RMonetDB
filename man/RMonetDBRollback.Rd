@@ -5,14 +5,14 @@
   Execute an SQL ROLLBACK transaction call.
 }
 \usage{
-RMonetDBRollback(conn)
+RMonetDBRollback(con)
 }%"
 \arguments{
-  \item{conn}{an Open MonetDB Connection handle}
+  \item{con}{an Open MonetDB Connection handle}
 }
 \details{
 
-  RMonetDBRollback(conn)
+  RMonetDBRollback(con)
 
 }
 
@@ -25,7 +25,7 @@ RMonetDBRollback(conn)
 }
 \examples{\dontrun{
 # Rollback the open transaction
-RMonetDBRollback(conn)
+RMonetDBRollback(con)
 }}
 
 \author{

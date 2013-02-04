@@ -5,14 +5,14 @@
   Execute an SQL COMMIT transaction call.
 }
 \usage{
-RMonetDBCommit(conn)
+RMonetDBCommit(con)
 }%"
 \arguments{
-  \item{conn}{an Open MonetDB Connection handle}
+  \item{con}{an Open MonetDB Connection handle}
 }
 \details{
 
-  RMonetDBCommit(conn)
+  RMonetDBCommit(con)
 
 }
 
@@ -25,7 +25,7 @@ RMonetDBCommit(conn)
 }
 \examples{\dontrun{
 # Commit the open transaction
-RMonetDBCommit(conn)
+RMonetDBCommit(con)
 }}
 
 \author{

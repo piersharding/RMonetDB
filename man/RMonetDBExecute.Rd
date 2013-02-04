@@ -6,23 +6,22 @@
   Execute arbitrary SQL statements against the MonetDB database
 }
 \usage{
-RMonetDBExecute(conn, "SELECT * FROM voc.craftsmen LIMIT 3")
-RMonetDBExecute(conn, "SELECT * FROM voc.craftsmen LIMIT 3", autocommit=TRUE, lastid=FALSE, try=FALSE)
+RMonetDBExecute(con, sql, autocommit=TRUE, lastid=FALSE, try=FALSE)
 }%"
 \arguments{
-  \item{conn}{an Open MonetDB Connection handle}
-  \item{SQL}{SQL query to call}
+  \item{con}{an Open MonetDB Connection handle}
+  \item{sql}{SQL query to call}
   \item{autocommit}{optional - set autocommit for the statement to true}
   \item{lastid}{optional - return the record ID of the record affected - useful for INSERT}
   \item{try}{optional - try executing the statement - return FALSE on failure - TRUE for success}
 }
 \details{
 
-  conn <- RMonetDBConnect("db.yml")
-  res = RMonetDBExecute(conn, "SELECT * FROM voc.craftsmen LIMIT 3")
+  con <- RMonetDBConnect("db.yml")
+  res = RMonetDBExecute(con, "SELECT * FROM voc.craftsmen LIMIT 3")
   print(res)
   checkTrue(as.numeric(res) == 3)
-  RMonetDBClose(conn)
+  RMonetDBClose(con)
 
 }
 
@@ -36,7 +35,7 @@ RMonetDBExecute(conn, "SELECT * FROM voc.craftsmen LIMIT 3", autocommit=TRUE, la
 
 \examples{\dontrun{
 # Execute the query
-RMonetDBExecute(conn, "SELECT * FROM voc.craftsmen LIMIT 3")
+RMonetDBExecute(con, "SELECT * FROM voc.craftsmen LIMIT 3")
 }}
 
 \author{

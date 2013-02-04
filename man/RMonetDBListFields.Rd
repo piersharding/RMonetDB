@@ -5,19 +5,19 @@
   List the fields of a MonetDB table
 }
 \usage{
-RMonetDBListFields(conn, "table name")
+RMonetDBListFields(con, tablename, schema="")
 }%"
 \arguments{
-  \item{conn}{an Open MonetDB Connection handle}
-  \item{table name}{The table name to get fields for}
+  \item{con}{an Open MonetDB Connection handle}
+  \item{tablename}{The table name to get fields for}
   \item{schema}{optional - specify a schema if necessary}
 }
 \details{
 
-  conn <- RMonetDBConnect("db.yml")
-  res <- RMonetDBListFields(conn, "craftsmen")
+  con <- RMonetDBConnect("db.yml")
+  res <- RMonetDBListFields(con, "craftsmen")
   print(res)
-  RMonetDBClose(conn)
+  RMonetDBClose(con)
 
 }
 
@@ -30,7 +30,7 @@ RMonetDBListFields(conn, "table name")
 }
 \examples{\dontrun{
 # List fields
-RMonetDBListFields(conn, "craftsmen", schema="voc")
+RMonetDBListFields(con, "craftsmen", schema="voc")
 }}
 
 \author{

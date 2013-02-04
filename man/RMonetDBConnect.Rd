@@ -5,19 +5,25 @@
   Open connections to a MonetDB database
 }
 \usage{
-conn <- RMonetDBConnect(dbhost='localhost', dbuser='voc', dbpass='voc', dbname='voc')
-
-or
-
-RMonetDBConnect('db.yml')
+RMonetDBConnect(...)
 
 }%"
 \arguments{
   \item{...}{all MonetDB connection parameters for the MAPI client library}
-  \item{'db.yml'}{A YAML encoded file containing MAPI client library connection parameters.}
 }
 \details{
   \code{RMonetDBConnect} establishes an open database connection to the specified MonetDB
+  There are two styles of passing the connection parameters:
+  - \code{RMonetDBConnect('db.yml')} where the name of A YAML encoded file containing
+    MonetDB connection parameters is passed in
+  - \code{RMonetDBConnect(dbhost='localhost', dbuser='voc', dbpass='voc', dbname='voc', ...)}
+    The individual connection parameters are passed as per the requirements of the MonetDB mapi library
+    These parameters are typically:
+     * dbhost - the host and socket connection string/uri of MonetDB
+     * dbuser - MonetDB user name
+     * dbpass - user password
+     * dbname - MonetDB name
+
 }
 
 \note{
@@ -30,10 +36,13 @@ RMonetDBConnect('db.yml')
 }
 \examples{\dontrun{
 # full parameter specification
-conn <- RMonetDBConnect(dbhost='localhost', dbuser='voc', dbpass='voc', dbname='voc')
+con <- RMonetDBConnect(dbhost='localhost', dbuser='voc', dbpass='voc', dbname='voc')
+
+or
 
 # Use a YAML encoded parameter file
-conn <- RMonetDBConnect("db.yml")
+con <- RMonetDBConnect("db.yml")
+
 }}
 
 \author{

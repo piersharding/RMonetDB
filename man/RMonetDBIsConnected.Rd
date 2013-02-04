@@ -5,17 +5,17 @@
   Check the viability of a connection to MonetDB
 }
 \usage{
-RMonetDBIsConnected(conn, "funciton_name", parms)
+RMonetDBIsConnected(con)
 }%"
 \arguments{
-  \item{conn}{an Open MonetDB Connection handle}
+  \item{con}{an Open MonetDB Connection handle}
 }
 \details{
 
-  conn <- RMonetDBConnect("db.yml")
-  res <- RMonetDBIsConnected(conn)
+  con <- RMonetDBConnect("db.yml")
+  res <- RMonetDBIsConnected(con)
   print(res)
-  RMonetDBClose(conn)
+  RMonetDBClose(con)
 
 }
 
@@ -29,7 +29,7 @@ RMonetDBIsConnected(conn, "funciton_name", parms)
 
 \examples{\dontrun{
 # Check the connection
-RMonetDBIsConnected(conn)
+RMonetDBIsConnected(con)
 }}
 
 \author{
