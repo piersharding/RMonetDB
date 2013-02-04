@@ -128,7 +128,7 @@ RMonetDBExists <- function(con, tablename)
     if(!RMonetDBIsConnected(con))
        stop("argument is not a valid RMonetDB handle")
     exists <- paste('SELECT * FROM "', tablename, '" WHERE 1=0', sep="")
-	res <- RMonetDBExecute(con, exists, autocommit=FALSE, try=TRUE)
+	res <- RMonetDBExecute(con, exists, autocommit=FALSE, lastid=FALSE, try=TRUE)
     return(res)
 }
 

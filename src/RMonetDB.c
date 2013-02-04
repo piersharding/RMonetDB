@@ -266,6 +266,7 @@ SEXP RMonetDBExecute(SEXP handle, SEXP sql, SEXP autocommit, SEXP lastid, SEXP t
     SEXP exptr = getAttrib(handle, install("handle_ptr"));
     RMonetDB_CONN_INFO *hptr = R_ExternalPtrAddr(exptr);
 
+    // if auto commit - set commit on the handle
     if (!isLogical(autocommit) || LOGICAL(autocommit)[0] == TRUE) {
         if (mapi_setAutocommit(hptr->handle, 1) != MOK || mapi_error(hptr->handle)) {
             rmonetdb_errorcall(hptr->handle, hdl, "MonetDB failed to enable autocommit");
@@ -277,6 +278,7 @@ SEXP RMonetDBExecute(SEXP handle, SEXP sql, SEXP autocommit, SEXP lastid, SEXP t
         }
         //fprintf(stderr, "switched on autocommit\n");
     }
+    // else ensure that no auto commit
     else {
         if (mapi_setAutocommit(hptr->handle, 0) != MOK || mapi_error(hptr->handle)) {
             rmonetdb_errorcall(hptr->handle, hdl, "MonetDB failed to disable autocommit");
@@ -286,12 +288,15 @@ SEXP RMonetDBExecute(SEXP handle, SEXP sql, SEXP autocommit, SEXP lastid, SEXP t
             //return(R_NilValue);
             return(ans);
         }
-        //fprintf(stderr, "NO autocommit set\n");
+        // fprintf(stderr, "NO autocommit set\n");
     }
-    //fprintf(stderr, "EXECUTE: %s\n", CHAR(STRING_ELT(sql,0)));
+    // fprintf(stderr, "EXECUTE: %s\n", CHAR(STRING_ELT(sql,0)));
 
+    // if we have a good handle
     if (mapi_is_connected(hptr->handle) != 0 && mapi_ping(hptr->handle) == MOK) {
+        // if we have query that fails
         if ((hdl = mapi_query(hptr->handle, CHAR(STRING_ELT(sql,0)))) == NULL || mapi_error(hptr->handle)) {
+            // if 'try' then return false
             if (!isLogical(try) || LOGICAL(try)[0] == TRUE) {
                 PROTECT(ans = NEW_LOGICAL((Sint) 1));
                 LGL_EL(ans, 0) = (Sint) false;
@@ -312,6 +317,7 @@ SEXP RMonetDBExecute(SEXP handle, SEXP sql, SEXP autocommit, SEXP lastid, SEXP t
             return ScalarInteger(mapi_fetch_row(hdl));
         }
         else {
+            // if 'try' then return TRUE
             if (!isLogical(try) || LOGICAL(try)[0] == TRUE) {
                 PROTECT(ans = NEW_LOGICAL((Sint) 1));
                 LGL_EL(ans, 0) = (Sint) true;
